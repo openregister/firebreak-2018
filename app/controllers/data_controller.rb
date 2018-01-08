@@ -17,9 +17,20 @@ class DataController < ApplicationController
     @available_fields = @@registers_client.get_register('field', 'beta').get_records.select{
       |r| ['name', 'official-name', 'start-date', 'end-date'].include?(r.item.value['field'])
     }.map{|r| r.item.value}
-    # @fields = @register['fields']
 
     render "fields"
+  end
+
+  def link_to_registers
+    @registers = @@registers_client.get_register('register', 'beta').get_records.select{
+      |r| ['register', 'field', 'datatype'].exclude?(r.item.value['register'])
+    }.map{|r| r.item.value}
+
+    render "link_to_registers"
+  end
+
+  def save_linked_registers
+    redirect_to controller: 'data', action: 'upload_data'
   end
 
   def save_register_name
@@ -48,6 +59,10 @@ class DataController < ApplicationController
     @pickerData = PickerDataService.new().generate(@register['register'], @register['_uri'], @field)
 
     redirect_to controller: 'data', action: 'preview'
+  end
+
+  def save_fields
+    redirect_to controller: 'data', action: 'link_to_registers'
   end
 
   def preview()

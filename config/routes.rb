@@ -9,6 +9,8 @@ Rails.application.routes.draw do
   get 'data/registers' => 'data#getRegisters'
   get 'data/description' => 'data#description'
   get 'data/fields' => 'data#fields'
+  get 'data/link-to-registers' => 'data#link_to_registers'
+  get 'data/upload-data' => 'data#upload_data'
   get 'data/preview' => 'data#preview'
   get 'data/download' => 'data#download'
   get 'data/downloadZip' => 'data#downloadZip'
@@ -16,7 +18,8 @@ Rails.application.routes.draw do
   get 'data/summary' => 'data#summary'
   post 'data/save_register_name', to: 'data#save_register_name'
   post 'data/save_description', to: 'data#save_description'
-  post 'data/saveField', to: 'data#saveField'
+  post 'data/save_fields', to: 'data#save_fields'
+  post 'data/save_linked_registers', to: 'data#save_linked_registers'
 
   root 'data#index'
 

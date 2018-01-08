@@ -1,0 +1,113 @@
+<h1 class="heading-large">Create your own temporary register</h1>
+
+<h2>4. Link to existing registers</h2>
+
+<p>You can link to existing registers in your dataset by including them below.</p>
+
+<%= form_tag("save_linked_registers", method: ":post") do %>
+    <div class="form-group">
+      <div class="grid-row">
+        <div class="column-one-third register-container" id="available-register-container">
+          <h3>Available registers</h3>
+
+          <% @registers.each do |register| %>
+            <div class="multiple-choice-container">
+              <div class="multiple-choice">
+                <input type="checkbox" id="register-<%= register['register'] %>" name="registers" value="register-<%= register['register'] %>">
+                <label for="register-<%= register['register'] %>"><%= register['register'] %></label>
+              </div>
+              <p><span class="bold">Description:</span> <%= register['text'] %></p>
+            </div>
+          <% end %>
+        </div>
+
+        <div class="column-one-third button-container">
+          &nbsp;<input type="button" class="button" id="add-register-button" value="Link register(s)" />
+
+          &nbsp;<input type="button" class="button" id="remove-register-button" value="Unlink register(s)" />
+        </div>
+
+        <div class="column-one-third register-container" id="included-register-container">
+          <h3>Included registers</h3>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <%= submit_tag "Next", {class: "button"} %>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            disableAddButton();
+            disableRemoveButton();
+
+            var $noRegistersElem = '<div class="multiple-choice-container no-registers"><p>No registers included yet</p></div>';
+
+            $('#add-register-button').click(addregistersToIncluded);
+            $('#remove-register-button').click(removeregistersFromIncluded);
+
+            $('#included-register-container h3').after($noRegistersElem);
+
+            $("input[name='registers']").on('change', function() {
+                var availableCheckedRegisters = $("#available-register-container input[name='registers']:checked");
+                var includedCheckedRegisters = $("#included-register-container input[name='registers']:checked");
+
+                availableCheckedRegisters.length > 0 ? enableAddButton() : disableAddButton();
+                includedCheckedRegisters.length > 0 ? enableRemoveButton() : disableRemoveButton();
+            });
+
+            function addregistersToIncluded() {
+                var includedregisters = $("#available-register-container input[name='registers']:checked");
+
+                includedregisters.each(function() {
+                  $(this).prop('checked', false);
+
+                  var $register = $(this).parents('.multiple-choice-container');
+                  var $clonedregister = $register.clone(true);
+                  $clonedregister.appendTo('#included-register-container');
+
+                  $register.remove();
+                });
+
+                disableAddButton();
+
+                $('#included-register-container .no-registers').remove();
+            }
+
+            function removeregistersFromIncluded() {
+              var removedRegisters = $("#included-register-container input[name='registers']:checked");
+
+                removedRegisters.each(function() {
+                    $(this).prop('checked', false);
+
+                    var $register = $(this).parents('.multiple-choice-container');
+                    var $clonedregister = $register.clone(true);
+                    $clonedregister.appendTo('#available-register-container');
+
+                    $register.remove();
+                });
+
+                disableRemoveButton();
+
+                $('#included-register-container h3').after($noRegistersElem);
+            }
+
+            function enableAddButton() {
+                $('#add-register-button').removeAttr('disabled');
+            }
+
+            function disableAddButton() {
+                $('#add-register-button').attr('disabled', 'disabled');
+            }
+
+            function enableRemoveButton() {
+                $('#remove-register-button').removeAttr('disabled');
+            }
+
+            function disableRemoveButton() {
+                $('#remove-register-button').attr('disabled', 'disabled');
+            }
+        });
+    </script>
+<% end %>
