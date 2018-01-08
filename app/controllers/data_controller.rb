@@ -20,7 +20,7 @@ class DataController < ApplicationController
     render "fields"
   end
 
-  def saveRegister()
+  def save_register_name
     registerName = params[:register_name].split(':')[0]
     phase = params[:register_name].split(':')[1]
 
@@ -29,17 +29,17 @@ class DataController < ApplicationController
     redirect_to controller: 'data', action: 'description'
   end
 
-  def description()
+  def description
     render "description"
   end
 
-  def save_description()
+  def save_description
     @description = params[:register_description]
 
     redirect_to controller: 'data', action: 'fields'
   end
 
-  def saveField()
+  def saveField
     session[:fieldName] = params[:fieldName]
     @register = session[:register]
     @field = session[:fieldName]

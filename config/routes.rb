@@ -14,6 +14,7 @@ Rails.application.routes.draw do
   get 'data/downloadZip' => 'data#downloadZip'
   get 'data/confirmation' => 'data#confirmation'
   get 'data/summary' => 'data#summary'
+  post 'data/save_register_name', to: 'data#save_register_name'
   post 'data/save_description', to: 'data#save_description'
   post 'data/saveField', to: 'data#saveField'
 
