@@ -1,0 +1,70 @@
+<h1 class="heading-large">Create your own temporary register</h1>
+
+<h2>3. Choose fields to add to the register</h2>
+
+<%= form_tag("save_fields", method: ":post") do %>
+    <div class="form-group">
+      <div class="grid-row">
+        <div class="column-one-third field-container">
+          <h3>Available fields</h3>
+
+          <div class="multiple-choice-container">
+            <div class="multiple-choice">
+              <input type="checkbox" id="field-1" name="included-fields" value="field-name-1">
+              <label for="field-1">official-name</label>
+            </div>
+            <p><span class="bold">Description:</span> The official or technical name of a record.</p>
+            <p><span class="bold">Data type:</span> string</p>
+          </div>
+
+          <div class="multiple-choice-container">
+            <div class="multiple-choice">
+              <input type="checkbox" id="field-1" name="included-fields" value="field-name-1">
+              <label for="field-1">official-name</label>
+            </div>
+            <p><span class="bold">Description:</span> The official or technical name of a record.</p>
+            <p><span class="bold">Data type:</span> string</p>
+          </div>
+
+          <div class="multiple-choice-container">
+            <div class="multiple-choice">
+              <input type="checkbox" id="field-1" name="included-fields" value="field-name-1">
+              <label for="field-1">official-name</label>
+            </div>
+            <p><span class="bold">Description:</span> The official or technical name of a record.</p>
+            <p><span class="bold">Data type:</span> string</p>
+          </div>
+        </div>
+
+        <div class="column-one-third button-container">
+          &nbsp;<input type="button" class="button" id="add-field-button" value="Add field(s)" />
+
+          &nbsp;<input type="button" class="button" id="remove-field-button" value="Remove field(s)" />
+        </div>
+
+        <div class="column-one-third field-container">
+          <h3>Included fields</h3>
+
+          <div class="multiple-choice-container">
+            <p>No fields included yet</p>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+    <p>
+      <a href="#">Create a custom field</a>
+    </p>
+
+    <div class="form-group">
+      <%= submit_tag "Next", {class: "button"} %>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+           alert('ready');
+        });
+    </script>
+<% end %>

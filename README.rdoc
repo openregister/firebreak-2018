@@ -1,0 +1,10 @@
+== README
+
+To get up and running, you'll need to do the following:
+
+- Clone Kibitz from https://github.com/openregister/kibitz and follow the `readme`
+- Clone Morc from https://github.com/openregister/morc (not available yet) and follow the `readme`.
+
+
+Please feel free to use a different markup language if you do not plan to run
+<tt>rake doc:app</tt>.
