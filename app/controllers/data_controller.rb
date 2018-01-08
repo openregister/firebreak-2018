@@ -14,7 +14,9 @@ class DataController < ApplicationController
   end
 
   def fields()
-
+    @available_fields = @@registers_client.get_register('field', 'beta').get_records.select{
+      |r| ['name', 'official-name', 'start-date', 'end-date'].include?(r.item.value['field'])
+    }.map{|r| r.item.value}
     # @fields = @register['fields']
 
     render "fields"

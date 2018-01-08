@@ -8,32 +8,16 @@
         <div class="column-one-third field-container" id="available-field-container">
           <h3>Available fields</h3>
 
-          <div class="multiple-choice-container">
-            <div class="multiple-choice">
-              <input type="checkbox" id="field-1" name="fields" value="field-name-1">
-              <label for="field-1">official-name</label>
+          <% @available_fields.each do |field| %>
+            <div class="multiple-choice-container">
+              <div class="multiple-choice">
+                <input type="checkbox" id="field-<%= field['field'] %>" name="fields" value="field-<%= field['field'] %>">
+                <label for="field-1"><%= field['field'] %></label>
+              </div>
+              <p><span class="bold">Description:</span> <%= field['text'] %></p>
+              <p><span class="bold">Data type:</span> <%= field['datatype'] %></p>
             </div>
-            <p><span class="bold">Description:</span> The official or technical name of a record.</p>
-            <p><span class="bold">Data type:</span> string</p>
-          </div>
-
-          <div class="multiple-choice-container">
-            <div class="multiple-choice">
-              <input type="checkbox" id="field-1" name="fields" value="field-name-1">
-              <label for="field-1">official-name</label>
-            </div>
-            <p><span class="bold">Description:</span> The official or technical name of a record.</p>
-            <p><span class="bold">Data type:</span> string</p>
-          </div>
-
-          <div class="multiple-choice-container">
-            <div class="multiple-choice">
-              <input type="checkbox" id="field-1" name="fields" value="field-name-1">
-              <label for="field-1">official-name</label>
-            </div>
-            <p><span class="bold">Description:</span> The official or technical name of a record.</p>
-            <p><span class="bold">Data type:</span> string</p>
-          </div>
+          <% end %>
         </div>
 
         <div class="column-one-third button-container">
@@ -46,8 +30,6 @@
           <h3>Included fields</h3>
         </div>
       </div>
-
-
     </div>
 
     <p>

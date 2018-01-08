@@ -7,6 +7,15 @@ GIT
       morph (~> 0.5.0)
       rest-client (~> 2)
 
+GIT
+  remote: https://github.com/openregister/registers-ruby-client.git
+  revision: a137543441d517c7aa673bf254d8d34bec600c1e
+  tag: v0.6.0
+  specs:
+    registers-ruby-client (0.6.0)
+      mini_cache (~> 1.1.0)
+      rest-client (~> 2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -206,6 +215,7 @@ DEPENDENCIES
   openregister-ruby!
   pg
   rails
+  registers-ruby-client!
   rubyzip
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)
