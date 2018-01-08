@@ -5,12 +5,12 @@
 <%= form_tag("save_fields", method: ":post") do %>
     <div class="form-group">
       <div class="grid-row">
-        <div class="column-one-third field-container">
+        <div class="column-one-third field-container" id="available-field-container">
           <h3>Available fields</h3>
 
           <div class="multiple-choice-container">
             <div class="multiple-choice">
-              <input type="checkbox" id="field-1" name="included-fields" value="field-name-1">
+              <input type="checkbox" id="field-1" name="fields" value="field-name-1">
               <label for="field-1">official-name</label>
             </div>
             <p><span class="bold">Description:</span> The official or technical name of a record.</p>
@@ -19,7 +19,7 @@
 
           <div class="multiple-choice-container">
             <div class="multiple-choice">
-              <input type="checkbox" id="field-1" name="included-fields" value="field-name-1">
+              <input type="checkbox" id="field-1" name="fields" value="field-name-1">
               <label for="field-1">official-name</label>
             </div>
             <p><span class="bold">Description:</span> The official or technical name of a record.</p>
@@ -28,7 +28,7 @@
 
           <div class="multiple-choice-container">
             <div class="multiple-choice">
-              <input type="checkbox" id="field-1" name="included-fields" value="field-name-1">
+              <input type="checkbox" id="field-1" name="fields" value="field-name-1">
               <label for="field-1">official-name</label>
             </div>
             <p><span class="bold">Description:</span> The official or technical name of a record.</p>
@@ -42,12 +42,8 @@
           &nbsp;<input type="button" class="button" id="remove-field-button" value="Remove field(s)" />
         </div>
 
-        <div class="column-one-third field-container">
+        <div class="column-one-third field-container" id="included-field-container">
           <h3>Included fields</h3>
-
-          <div class="multiple-choice-container">
-            <p>No fields included yet</p>
-          </div>
         </div>
       </div>
 
@@ -64,7 +60,75 @@
 
     <script type="text/javascript">
         $(document).ready(function(){
-           alert('ready');
+            disableAddButton();
+            disableRemoveButton();
+
+            var $noFieldsElem = '<div class="multiple-choice-container no-fields"><p>No fields included yet</p></div>';
+
+            $('#add-field-button').click(addFieldsToIncluded);
+            $('#remove-field-button').click(removeFieldsFromIncluded);
+
+            $('#included-field-container h3').after($noFieldsElem);
+
+            $("input[name='fields']").on('change', function() {
+                var availableCheckedFields = $("#available-field-container input[name='fields']:checked");
+                var includedCheckedFields = $("#included-field-container input[name='fields']:checked");
+
+                availableCheckedFields.length > 0 ? enableAddButton() : disableAddButton();
+                includedCheckedFields.length > 0 ? enableRemoveButton() : disableRemoveButton();
+            });
+
+            function addFieldsToIncluded() {
+                var includedFields = $("#available-field-container input[name='fields']:checked");
+
+                includedFields.each(function() {
+                  $(this).prop('checked', false);
+
+                  var $field = $(this).parents('.multiple-choice-container');
+                  var $clonedField = $field.clone(true);
+                  $clonedField.appendTo('#included-field-container');
+
+                  $field.remove();
+                });
+
+                disableAddButton();
+
+                $('#included-field-container .no-fields').remove();
+            }
+
+            function removeFieldsFromIncluded() {
+              var removedFields = $("#included-field-container input[name='fields']:checked");
+
+                removedFields.each(function() {
+                    $(this).prop('checked', false);
+
+                    var $field = $(this).parents('.multiple-choice-container');
+                    var $clonedField = $field.clone(true);
+                    $clonedField.appendTo('#available-field-container');
+
+                    $field.remove();
+                });
+
+                disableRemoveButton();
+
+                $('#included-field-container h3').after($noFieldsElem);
+            }
+
+            function enableAddButton() {
+                $('#add-field-button').removeAttr('disabled');
+            }
+
+            function disableAddButton() {
+                $('#add-field-button').attr('disabled', 'disabled');
+            }
+
+            function enableRemoveButton() {
+                $('#remove-field-button').removeAttr('disabled');
+            }
+
+            function disableRemoveButton() {
+                $('#remove-field-button').attr('disabled', 'disabled');
+            }
         });
     </script>
 <% end %>
