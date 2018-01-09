@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'zip'
 
-module DataHelper
+module TemporaryRegisterHelper
   def zipCodeFilesHelper()
     filesToZip = ['picker.html', 'picker-data.json']
     destination = Rails.root.join("app", "assets", "static", "code.zip")

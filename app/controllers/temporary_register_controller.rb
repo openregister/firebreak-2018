@@ -2,15 +2,30 @@ require 'openregister'
 require 'rubygems'
 require 'zip'
 
-class DataController < ApplicationController
+class TemporaryRegisterController < ApplicationController
   before_filter :initializeRegisters
 
-  def getRegisters
-    @mappedRegisters = @registers.map do |register|
-      [register.register + ' (' + register.phase + ')', register.register + ':' + register.phase]
-    end
+  def register_name
+    render "register_name"
+  end
 
-    render "registers"
+  def save_register_name
+    registerName = params[:register_name].split(':')[0]
+    phase = params[:register_name].split(':')[1]
+
+    session[:register] = @registers.select{|r| r.register == registerName && r.phase == phase}[0]
+
+    redirect('register_name')
+  end
+
+  def description
+    render "description"
+  end
+
+  def save_description
+    @description = params[:register_description]
+
+    redirect('description')
   end
 
   def fields()
@@ -21,35 +36,20 @@ class DataController < ApplicationController
     render "fields"
   end
 
-  def link_to_registers
+  def save_fields
+    redirect('fields')
+  end
+
+  def linked_registers
     @registers = @@registers_client.get_register('register', 'beta').get_records.select{
       |r| ['register', 'field', 'datatype'].exclude?(r.item.value['register'])
     }.map{|r| r.item.value}
 
-    render "link_to_registers"
+    render "linked_registers"
   end
 
   def save_linked_registers
-    redirect_to controller: 'data', action: 'upload_data'
-  end
-
-  def save_register_name
-    registerName = params[:register_name].split(':')[0]
-    phase = params[:register_name].split(':')[1]
-
-    session[:register] = @registers.select{|r| r.register == registerName && r.phase == phase}[0]
-
-    redirect_to controller: 'data', action: 'description'
-  end
-
-  def description
-    render "description"
-  end
-
-  def save_description
-    @description = params[:register_description]
-
-    redirect_to controller: 'data', action: 'fields'
+    redirect_to controller: 'temporary_register', action: 'upload_data'
   end
 
   def saveField
@@ -58,18 +58,7 @@ class DataController < ApplicationController
     @field = session[:fieldName]
     @pickerData = PickerDataService.new().generate(@register['register'], @register['_uri'], @field)
 
-    redirect_to controller: 'data', action: 'preview'
-  end
-
-  def save_fields
-    redirect_to controller: 'data', action: 'link_to_registers'
-  end
-
-  def preview()
-    @register = session[:register]
-    @field = session[:fieldName]
-
-    render "preview"
+    redirect_to controller: 'temporary_register', action: 'preview'
   end
 
   def download()
@@ -111,5 +100,20 @@ class DataController < ApplicationController
     @registers = OpenRegister.registers :discovery
     @registers.concat(OpenRegister.registers :alpha)
     @registers.concat(OpenRegister.registers :beta)
+  end
+
+  private
+
+  def redirect(current_page)
+    redirect_page = case current_page
+                      when 'register_name'
+                        'description'
+                      when 'description'
+                        'fields'
+                      when 'fields'
+                        'linked_registers'
+                    end
+
+    redirect_to controller: 'temporary_register', action: redirect_page
   end
 end
