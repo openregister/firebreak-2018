@@ -11,7 +11,7 @@ Rails.application.routes.draw do
   get 'temporary_register/fields' => 'temporary_register#fields'
   get 'temporary_register/custom_field' => 'temporary_register#custom_field'
   get 'temporary_register/linked_registers' => 'temporary_register#linked_registers'
-  get 'temporary_register/upload-data' => 'temporary_register#upload_data'
+  get 'temporary_register/upload_data' => 'temporary_register#upload_data'
   get 'temporary_register/preview' => 'temporary_register#preview'
   get 'temporary_register/download' => 'temporary_register#download'
   get 'temporary_register/downloadZip' => 'temporary_register#downloadZip'
