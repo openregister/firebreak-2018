@@ -40,6 +40,16 @@ class TemporaryRegisterController < ApplicationController
     redirect('fields')
   end
 
+  def custom_field
+    @datatypes = @@registers_client.get_register('datatype', 'beta').get_records.map{|r| r.item.value}
+
+    render "custom_field"
+  end
+
+  def save_custom_field
+    redirect('custom_field')
+  end
+
   def linked_registers
     @registers = @@registers_client.get_register('register', 'beta').get_records.select{
       |r| ['register', 'field', 'datatype'].exclude?(r.item.value['register'])
@@ -50,6 +60,32 @@ class TemporaryRegisterController < ApplicationController
 
   def save_linked_registers
     redirect_to controller: 'temporary_register', action: 'upload_data'
+  end
+
+  def upload_data
+    render "upload_data"
+  end
+
+  def save_upload_data
+    redirect('upload_data')
+  end
+
+  def summary()
+    # @register = session[:register]
+    # @field = session[:fieldName]
+    # @pickerData = PickerDataService.new().generate(@register['register'], @register['_uri'], @field)
+    @linked_registers = []
+    @included_fields = []
+
+    render "summary"
+  end
+
+  def create_register
+    redirect('create_register')
+  end
+
+  def confirmation
+    render "congratulations"
   end
 
   def saveField
@@ -84,18 +120,6 @@ class TemporaryRegisterController < ApplicationController
     send_data(zip_data, :type => 'application/zip', :filename => zipFileName)
   end
 
-  def confirmation()
-    render "confirmation"
-  end
-
-  def summary()
-    @register = session[:register]
-    @field = session[:fieldName]
-    @pickerData = PickerDataService.new().generate(@register['register'], @register['_uri'], @field)
-
-    render "summary"
-  end
-
   def initializeRegisters()
     @registers = OpenRegister.registers :discovery
     @registers.concat(OpenRegister.registers :alpha)
@@ -112,6 +136,12 @@ class TemporaryRegisterController < ApplicationController
                         'fields'
                       when 'fields'
                         'linked_registers'
+                      when 'custom_field'
+                        'fields'
+                      when 'upload_data'
+                        'summary'
+                      when 'create_register'
+                        'confirmation'
                     end
 
     redirect_to controller: 'temporary_register', action: redirect_page

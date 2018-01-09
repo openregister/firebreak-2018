@@ -9,6 +9,7 @@ Rails.application.routes.draw do
   get 'temporary_register/register_name' => 'temporary_register#register_name'
   get 'temporary_register/description' => 'temporary_register#description'
   get 'temporary_register/fields' => 'temporary_register#fields'
+  get 'temporary_register/custom_field' => 'temporary_register#custom_field'
   get 'temporary_register/linked_registers' => 'temporary_register#linked_registers'
   get 'temporary_register/upload-data' => 'temporary_register#upload_data'
   get 'temporary_register/preview' => 'temporary_register#preview'
@@ -16,10 +17,14 @@ Rails.application.routes.draw do
   get 'temporary_register/downloadZip' => 'temporary_register#downloadZip'
   get 'temporary_register/confirmation' => 'temporary_register#confirmation'
   get 'temporary_register/summary' => 'temporary_register#summary'
+  get 'temporary_register/confirmation' => 'temporary_register#confirmation'
   post 'temporary_register/save_register_name', to: 'temporary_register#save_register_name'
   post 'temporary_register/save_description', to: 'temporary_register#save_description'
   post 'temporary_register/save_fields', to: 'temporary_register#save_fields'
+  post 'temporary_register/save_custom_field', to: 'temporary_register#save_custom_field'
   post 'temporary_register/save_linked_registers', to: 'temporary_register#save_linked_registers'
+  post 'temporary_register/save_upload_data', to: 'temporary_register#save_upload_data'
+  post 'temporary_register/create_register', to: 'temporary_register#create_register'
 
   root 'temporary_register#index'
 

@@ -1,0 +1,16 @@
+<h1 class="heading-large">Create your own temporary register</h1>
+
+<h2>5. Upload your data</h2>
+
+<%= form_tag("/temporary_register/save_upload_data", method: ":post") do %>
+    <div class="form-group">
+      <%= file_field_tag :register_data %>
+    </div>
+
+    <p>Your file must be of type .xlsx, .xls or Open Document and the field names and types must exactly match those specified for this register.</p>
+
+    <div class="form-group">
+      <%= submit_tag "Continue", {class: "button"} %>
+    </div>
+
+<% end %>

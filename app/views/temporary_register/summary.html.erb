@@ -1,11 +1,44 @@
-<h1>Summary</h1>
+<h1 class="heading-large">Create your own temporary register</h1>
+<h2 class="heading-medium">Summary</h2>
 
-<h3>Selected Register:</h3> <%= @register['register'] %>
-<h3>Endpoint:</h3> <%= @register['_uri'] %>
-<h3>Phase:</h3> <%= @register['phase'] %>
-<h3>Selected Field:</h3> <%= @field %>
+<div class="form-group">
+  <label class="form-label">Register name</label>
+  <%= text_field_tag(:register_name, 'biscuits', { disabled: true }) %>
+</div>
 
-<h3>Picker Data:</h3>
-<textarea rows="20" cols="100"><%= @pickerData %></textarea>
+<div class="form-group">
+  <label class="form-label">Register description</label>
+  <%= text_field_tag(:register_name, 'All the biscuits', { disabled: true }) %>
+</div>
 
+<div class="form-group">
+  <label class="form-label">Linked registers</label>
+  <% @linked_registers.each do |register| %>
+      <div class="field-container">
+        <p><span class="bold"></span><%= register['register'] %></p>
+        <p><span class="bold">Description:</span> <%= register['text'] %></p>
+      </div>
+  <% end %>
+</div>
 
+<div class="form-group">
+  <label class="form-label">Included fields</label>
+  <% @included_fields.each do |field| %>
+    <div class="field-container">
+      <p><span class="bold"></span><%= field['field'] %></p>
+      <p><span class="bold">Description:</span> <%= field['text'] %></p>
+      <p><span class="bold">Data type:</span> <%= field['datatype'] %></p>
+    </div>
+  <% end %>
+</div>
+
+<div class="form-group">
+  <label class="form-label">Data file to upload</label>
+  <%= text_field_tag(:register_name, 'favourite-biscuits.xls', { disabled: true }) %>
+</div>
+
+<%= form_tag("create_register", method: ":post") do %>
+  <div class="form-group">
+    <%= submit_tag "Create register", {class: "button"} %>
+  </div>
+<% end %>
