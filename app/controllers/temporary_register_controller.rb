@@ -30,9 +30,14 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def fields()
+    unless (session.has_key?(:custom_fields))
+      session[:custom_fields] = []
+    end
+
     @available_fields = @@registers_client.get_register('field', 'beta').get_records.select{
       |r| ['name', 'official-name', 'start-date', 'end-date'].include?(r.item.value['field'])
     }.map{|r| r.item.value}
+    @available_fields.concat(custom_fields_for_view)
     @included_fields = session[:included_fields] || []
 
     render "fields"
@@ -46,11 +51,14 @@ class TemporaryRegisterController < ApplicationController
 
   def custom_field
     @datatypes = @@registers_client.get_register('datatype', 'beta').get_records.map{|r| r.item.value}
+    @custom_field = CustomField.new
 
     render "custom_field"
   end
 
   def save_custom_field
+    session[:custom_fields] << CustomField.new(params.require(:custom_field).permit(:field_name, :field_description, :datatype))
+
     redirect_from('custom_field')
   end
 
@@ -64,7 +72,7 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def save_linked_registers
-    session[:linked_registers] = params[:included_registers]
+    session[:linked_registers] = params[:included_registers] || []
 
     redirect_from('linked_registers')
   end
@@ -86,6 +94,7 @@ class TemporaryRegisterController < ApplicationController
     @included_fields = @@registers_client.get_register('field', 'beta').get_records
                            .select{|f| session[:included_fields].include?(f.item.value['field'])}
                            .map{|f| f.item.value}
+    @included_fields.concat(custom_fields_for_view)
 
     render "summary"
   end
@@ -137,6 +146,10 @@ class TemporaryRegisterController < ApplicationController
   end
 
   private
+
+  def custom_fields_for_view
+    session[:custom_fields].map{|cf| {'field' => cf['field_name'], 'text' => cf['field_description'], 'datatype' => cf['datatype']}}
+  end
 
   def redirect_from(current_page)
     redirect_page = case current_page
