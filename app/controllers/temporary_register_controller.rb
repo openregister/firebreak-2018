@@ -6,38 +6,42 @@ class TemporaryRegisterController < ApplicationController
   before_filter :initializeRegisters
 
   def register_name
+    @register_name = session[:register_name]
+
     render "register_name"
   end
 
   def save_register_name
-    registerName = params[:register_name].split(':')[0]
-    phase = params[:register_name].split(':')[1]
+    session[:register_name] = params[:register_name]
 
-    session[:register] = @registers.select{|r| r.register == registerName && r.phase == phase}[0]
-
-    redirect('register_name')
+    redirect_from('register_name')
   end
 
   def description
+    @register_description = session[:register_description]
+
     render "description"
   end
 
   def save_description
-    @description = params[:register_description]
+    session[:register_description] = params[:register_description]
 
-    redirect('description')
+    redirect_from('description')
   end
 
   def fields()
     @available_fields = @@registers_client.get_register('field', 'beta').get_records.select{
       |r| ['name', 'official-name', 'start-date', 'end-date'].include?(r.item.value['field'])
     }.map{|r| r.item.value}
+    @included_fields = session[:included_fields] || []
 
     render "fields"
   end
 
   def save_fields
-    redirect('fields')
+    session[:included_fields] = params[:included_fields]
+
+    redirect_from('fields')
   end
 
   def custom_field
@@ -47,7 +51,7 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def save_custom_field
-    redirect('custom_field')
+    redirect_from('custom_field')
   end
 
   def linked_registers
@@ -59,7 +63,7 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def save_linked_registers
-    redirect_to controller: 'temporary_register', action: 'upload_data'
+    redirect_from('linked_registers')
   end
 
   def upload_data
@@ -67,21 +71,22 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def save_upload_data
-    redirect('upload_data')
+    redirect_from('upload_data')
   end
 
   def summary()
-    # @register = session[:register]
+    @register_name = session[:register_name]
+    @register_description = session[:register_description]
     # @field = session[:fieldName]
     # @pickerData = PickerDataService.new().generate(@register['register'], @register['_uri'], @field)
     @linked_registers = []
-    @included_fields = []
+    @included_fields = session[:included_fields]
 
     render "summary"
   end
 
   def create_register
-    redirect('create_register')
+    redirect_from('create_register')
   end
 
   def confirmation
@@ -128,16 +133,18 @@ class TemporaryRegisterController < ApplicationController
 
   private
 
-  def redirect(current_page)
+  def redirect_from(current_page)
     redirect_page = case current_page
                       when 'register_name'
                         'description'
                       when 'description'
                         'fields'
-                      when 'fields'
-                        'linked_registers'
                       when 'custom_field'
                         'fields'
+                      when 'fields'
+                        'linked_registers'
+                      when 'linked_registers'
+                        'upload_data'
                       when 'upload_data'
                         'summary'
                       when 'create_register'

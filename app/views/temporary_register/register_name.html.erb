@@ -4,7 +4,7 @@
 
 <%= form_tag("/temporary_register/save_register_name", method: ":post") do %>
     <div class="form-group">
-      <%= text_field_tag :register_name %>
+      <%= text_field_tag(:register_name, @register_name) %>
     </div>
 
     <div class="form-group">

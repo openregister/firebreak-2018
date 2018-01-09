@@ -15,7 +15,7 @@
           <% @registers.each do |register| %>
             <div class="multiple-choice-container">
               <div class="multiple-choice">
-                <input type="checkbox" id="register-<%= register['register'] %>" name="registers" value="register-<%= register['register'] %>">
+                <input type="checkbox" id="register-<%= register['register'] %>" name="registers[]" value="<%= register['register'] %>">
                 <label for="register-<%= register['register'] %>"><%= register['register'] %></label>
               </div>
               <p><span class="bold">Description:</span> <%= register['text'] %></p>

@@ -11,14 +11,16 @@
           <h3>Available fields</h3>
 
           <% @available_fields.each do |field| %>
-            <div class="multiple-choice-container">
-              <div class="multiple-choice">
-                <input type="checkbox" id="field-<%= field['field'] %>" name="fields" value="field-<%= field['field'] %>">
-                <label for="field-1"><%= field['field'] %></label>
+            <% unless (@included_fields.include?(field['field'])) %>
+              <div class="multiple-choice-container">
+                <div class="multiple-choice">
+                  <input type="checkbox" id="field-<%= field['field'] %>" name="fields[]" value="<%= field['field'] %>">
+                  <label for="field-1"><%= field['field'] %></label>
+                </div>
+                <p><span class="bold">Description:</span> <%= field['text'] %></p>
+                <p><span class="bold">Data type:</span> <%= field['datatype'] %></p>
               </div>
-              <p><span class="bold">Description:</span> <%= field['text'] %></p>
-              <p><span class="bold">Data type:</span> <%= field['datatype'] %></p>
-            </div>
+            <% end %>
           <% end %>
         </div>
 
@@ -30,6 +32,20 @@
 
         <div class="column-one-third field-container" id="included-field-container">
           <h3>Included fields</h3>
+
+          <% @included_fields.each do |field_name| %>
+            <% field = @available_fields.select{|f| f['field'] == field_name}.first %>
+            <div class="multiple-choice-container">
+              <div class="multiple-choice">
+                <input type="checkbox" id="field-<%= field['field'] %>" name="fields[]" value="<%= field['field'] %>">
+                <label for="field-1"><%= field['field'] %></label>
+              </div>
+              <p><span class="bold">Description:</span> <%= field['text'] %></p>
+              <p><span class="bold">Data type:</span> <%= field['datatype'] %></p>
+            </div>
+
+            <input type="hidden" name="included_fields[]" id="included_field-<%= field_name %>" value="<%= field_name %>" />
+          <% end %>
         </div>
       </div>
     </div>
@@ -52,50 +68,62 @@
             $('#add-field-button').click(addFieldsToIncluded);
             $('#remove-field-button').click(removeFieldsFromIncluded);
 
-            $('#included-field-container h3').after($noFieldsElem);
+            update_no_fields_included_message();
 
-            $("input[name='fields']").on('change', function() {
-                var availableCheckedFields = $("#available-field-container input[name='fields']:checked");
-                var includedCheckedFields = $("#included-field-container input[name='fields']:checked");
+            $("input[id*='field-']").on('change', function() {
+                var availableCheckedFields = $("#available-field-container input[id*='field-']:checked");
+                var includedCheckedFields = $("#included-field-container input[id*='field-']:checked");
 
                 availableCheckedFields.length > 0 ? enableAddButton() : disableAddButton();
                 includedCheckedFields.length > 0 ? enableRemoveButton() : disableRemoveButton();
             });
 
             function addFieldsToIncluded() {
-                var includedFields = $("#available-field-container input[name='fields']:checked");
+              var includedFields = $("#available-field-container input[id*='field-']:checked");
 
-                includedFields.each(function() {
-                  $(this).prop('checked', false);
+              includedFields.each(function() {
+                $(this).prop('checked', false);
 
-                  var $field = $(this).parents('.multiple-choice-container');
-                  var $clonedField = $field.clone(true);
-                  $clonedField.appendTo('#included-field-container');
+                var fieldName = $(this).val();
+                $('#included-field-container').append('<input type="hidden" name="included_fields[]" id="included_field-'+ fieldName +'" value="'+ fieldName +'" />');
 
-                  $field.remove();
-                });
+                var $field = $(this).parents('.multiple-choice-container');
+                var $clonedField = $field.clone(true);
+                $clonedField.appendTo('#included-field-container');
 
-                disableAddButton();
+                $field.remove();
+              });
 
-                $('#included-field-container .no-fields').remove();
+              disableAddButton();
+
+              $('#included-field-container .no-fields').remove();
             }
 
             function removeFieldsFromIncluded() {
-              var removedFields = $("#included-field-container input[name='fields']:checked");
+              var removedFields = $("#included-field-container input[id*='field-']:checked");
 
-                removedFields.each(function() {
-                    $(this).prop('checked', false);
+              removedFields.each(function() {
+                $(this).prop('checked', false);
 
-                    var $field = $(this).parents('.multiple-choice-container');
-                    var $clonedField = $field.clone(true);
-                    $clonedField.appendTo('#available-field-container');
+                var fieldName = $(this).val();
+                $('#included_field-'+ fieldName).remove();
 
-                    $field.remove();
-                });
+                var $field = $(this).parents('.multiple-choice-container');
+                var $clonedField = $field.clone(true);
+                $clonedField.appendTo('#available-field-container');
 
-                disableRemoveButton();
+                $field.remove();
+              });
 
-                $('#included-field-container h3').after($noFieldsElem);
+              disableRemoveButton();
+
+              update_no_fields_included_message();
+            }
+
+            function update_no_fields_included_message() {
+                if ($("#included-field-container .multiple-choice-container").length == 0) {
+                    $('#included-field-container h3').after($noFieldsElem);
+                }
             }
 
             function enableAddButton() {

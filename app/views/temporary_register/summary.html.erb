@@ -5,12 +5,12 @@
 
 <div class="form-group">
   <label class="form-label">Register name</label>
-  <%= text_field_tag(:register_name, 'biscuits', { disabled: true }) %>
+  <%= text_field_tag(:register_name, @register_name, { disabled: true }) %>
 </div>
 
 <div class="form-group">
   <label class="form-label">Register description</label>
-  <%= text_field_tag(:register_name, 'All the biscuits', { disabled: true }) %>
+  <%= text_field_tag(:register_name, @register_description, { disabled: true }) %>
 </div>
 
 <div class="form-group">
