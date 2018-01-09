@@ -44,7 +44,7 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def save_fields
-    session[:included_fields] = params[:included_fields]
+    session[:included_fields] = params[:included_fields] || []
 
     redirect_from('fields')
   end
