@@ -24,12 +24,7 @@ h3 {
   font-weight: bold;
 }
 
-.field-container {
-  border: 1px solid #000;
-
-}
-
-.multiple-choice-container {
+.multiple-choice-container, .field-item, .register-item {
   margin: 10px auto;
   padding: 10px;
   background-color: #eee;
@@ -39,10 +34,15 @@ h3 {
   margin-bottom: 10px;
 }
 
-.multiple-choice-container p {
+.multiple-choice-container p, .field-item p, .register-item p {
   clear: left;
   margin-top: 10px;
   margin-bottom: 0;
+}
+
+.field-item, .register-item {
+  float: left;
+  margin-right: 10px;
 }
 
 .button-container {
@@ -52,5 +52,5 @@ h3 {
 .button-container .button {
   display: block;
   margin: auto;
-
 }
+

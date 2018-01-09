@@ -80,10 +80,12 @@ class TemporaryRegisterController < ApplicationController
   def summary()
     @register_name = session[:register_name]
     @register_description = session[:register_description]
-    # @field = session[:fieldName]
-    # @pickerData = PickerDataService.new().generate(@register['register'], @register['_uri'], @field)
-    @linked_registers = []
-    @included_fields = session[:included_fields]
+    @linked_registers = @@registers_client.get_register('register', 'beta').get_records
+                            .select{|r| session[:linked_registers].include?(r.item.value['register'])}
+                            .map{|r| r.item.value}
+    @included_fields = @@registers_client.get_register('field', 'beta').get_records
+                           .select{|f| session[:included_fields].include?(f.item.value['field'])}
+                           .map{|f| f.item.value}
 
     render "summary"
   end

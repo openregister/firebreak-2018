@@ -15,23 +15,26 @@
 
 <div class="form-group">
   <label class="form-label">Linked registers</label>
-  <% @linked_registers.each do |register| %>
-      <div class="field-container">
-        <p><span class="bold"></span><%= register['register'] %></p>
-        <p><span class="bold">Description:</span> <%= register['text'] %></p>
+  <div class="register-container">
+    <% @linked_registers.each do |register| %>
+      <div class="register-item">
+        <p><span class="bold"><%= register['register'] %></span></p>
       </div>
-  <% end %>
+    <% end %>
+  </div>
 </div>
 
 <div class="form-group">
   <label class="form-label">Included fields</label>
-  <% @included_fields.each do |field| %>
-    <div class="field-container">
-      <p><span class="bold"></span><%= field['field'] %></p>
-      <p><span class="bold">Description:</span> <%= field['text'] %></p>
-      <p><span class="bold">Data type:</span> <%= field['datatype'] %></p>
-    </div>
-  <% end %>
+
+  <div class="field-container">
+    <% @included_fields.each do |field| %>
+      <div class="field-item">
+        <p><span class="bold"><%= field['field'] %></span></p>
+      </div>
+    <% end %>
+  </div>
+
 </div>
 
 <div class="form-group">
