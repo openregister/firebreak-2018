@@ -58,11 +58,14 @@ class TemporaryRegisterController < ApplicationController
     @registers = @@registers_client.get_register('register', 'beta').get_records.select{
       |r| ['register', 'field', 'datatype'].exclude?(r.item.value['register'])
     }.map{|r| r.item.value}
+    @linked_registers = session[:linked_registers] || []
 
     render "linked_registers"
   end
 
   def save_linked_registers
+    session[:linked_registers] = params[:included_registers]
+
     redirect_from('linked_registers')
   end
 

@@ -13,13 +13,15 @@
           <h3>Available registers</h3>
 
           <% @registers.each do |register| %>
-            <div class="multiple-choice-container">
-              <div class="multiple-choice">
-                <input type="checkbox" id="register-<%= register['register'] %>" name="registers[]" value="<%= register['register'] %>">
-                <label for="register-<%= register['register'] %>"><%= register['register'] %></label>
+            <% unless (@linked_registers.include?(register['register'])) %>
+              <div class="multiple-choice-container">
+                <div class="multiple-choice">
+                  <input type="checkbox" id="register-<%= register['register'] %>" name="registers[]" value="<%= register['register'] %>">
+                  <label for="register-<%= register['register'] %>"><%= register['register'] %></label>
+                </div>
+                <p><span class="bold">Description:</span> <%= register['text'] %></p>
               </div>
-              <p><span class="bold">Description:</span> <%= register['text'] %></p>
-            </div>
+            <% end %>
           <% end %>
         </div>
 
@@ -31,6 +33,19 @@
 
         <div class="column-one-third register-container" id="included-register-container">
           <h3>Included registers</h3>
+
+          <% @linked_registers.each do |register_name| %>
+            <% register = @registers.select{|r| r['register'] == register_name}.first %>
+              <div class="multiple-choice-container">
+                <div class="multiple-choice">
+                  <input type="checkbox" id="register-<%= register['register'] %>" name="registers[]" value="<%= register['register'] %>">
+                  <label for="register-<%= register['register'] %>"><%= register['register'] %></label>
+                </div>
+                <p><span class="bold">Description:</span> <%= register['text'] %></p>
+              </div>
+
+              <input type="hidden" name="included_registers[]" id="included_register-<%= register_name %>" value="<%= register_name %>" />
+          <% end %>
         </div>
       </div>
     </div>
@@ -46,28 +61,31 @@
 
             var $noRegistersElem = '<div class="multiple-choice-container no-registers"><p>No registers included yet</p></div>';
 
-            $('#add-register-button').click(addregistersToIncluded);
-            $('#remove-register-button').click(removeregistersFromIncluded);
+            $('#add-register-button').click(addRegistersToIncluded);
+            $('#remove-register-button').click(removeRegistersFromIncluded);
 
-            $('#included-register-container h3').after($noRegistersElem);
+            update_no_registers_included_message();
 
-            $("input[name='registers']").on('change', function() {
-                var availableCheckedRegisters = $("#available-register-container input[name='registers']:checked");
-                var includedCheckedRegisters = $("#included-register-container input[name='registers']:checked");
+            $("input[id*='register-']").on('change', function() {
+                var availableCheckedRegisters = $("#available-register-container input[id*='register-']:checked");
+                var includedCheckedRegisters = $("#included-register-container input[id*='register-']:checked");
 
                 availableCheckedRegisters.length > 0 ? enableAddButton() : disableAddButton();
                 includedCheckedRegisters.length > 0 ? enableRemoveButton() : disableRemoveButton();
             });
 
-            function addregistersToIncluded() {
-                var includedregisters = $("#available-register-container input[name='registers']:checked");
+            function addRegistersToIncluded() {
+                var includedRegisters = $("#available-register-container input[id*='register-']:checked");
 
-                includedregisters.each(function() {
+                includedRegisters.each(function() {
                   $(this).prop('checked', false);
 
+                    var registerName = $(this).val();
+                    $('#included-register-container').append('<input type="hidden" name="included_registers[]" id="included_register-'+ registerName +'" value="'+ registerName +'" />');
+
                   var $register = $(this).parents('.multiple-choice-container');
-                  var $clonedregister = $register.clone(true);
-                  $clonedregister.appendTo('#included-register-container');
+                  var $clonedRegister = $register.clone(true);
+                  $clonedRegister.appendTo('#included-register-container');
 
                   $register.remove();
                 });
@@ -77,22 +95,31 @@
                 $('#included-register-container .no-registers').remove();
             }
 
-            function removeregistersFromIncluded() {
-              var removedRegisters = $("#included-register-container input[name='registers']:checked");
+            function removeRegistersFromIncluded() {
+              var removedRegisters = $("#included-register-container input[id*='register-']:checked");
 
                 removedRegisters.each(function() {
                     $(this).prop('checked', false);
 
+                    var registerName = $(this).val();
+                    $('#included_register-'+ registerName).remove();
+
                     var $register = $(this).parents('.multiple-choice-container');
-                    var $clonedregister = $register.clone(true);
-                    $clonedregister.appendTo('#available-register-container');
+                    var $clonedRegister = $register.clone(true);
+                    $clonedRegister.appendTo('#available-register-container');
 
                     $register.remove();
                 });
 
                 disableRemoveButton();
 
-                $('#included-register-container h3').after($noRegistersElem);
+                update_no_registers_included_message();
+            }
+
+            function update_no_registers_included_message() {
+                if ($("#included-register-container .multiple-choice-container").length == 0) {
+                    $('#included-register-container h3').after($noRegistersElem);
+                }
             }
 
             function enableAddButton() {
