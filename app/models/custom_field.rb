@@ -1,5 +1,5 @@
 class CustomField
   include ActiveModel::Model
 
-  attr_accessor :field_name, :field_description, :datatype
+  attr_accessor :field, :text, :datatype
 end

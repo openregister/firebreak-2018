@@ -1,6 +1,7 @@
 require 'openregister'
 require 'rubygems'
 require 'zip'
+require 'aws-sdk'
 
 class TemporaryRegisterController < ApplicationController
   before_filter :initializeRegisters
@@ -34,9 +35,7 @@ class TemporaryRegisterController < ApplicationController
       session[:custom_fields] = []
     end
 
-    @available_fields = @@registers_client.get_register('field', 'beta').get_records.select{
-      |r| ['name', 'official-name', 'start-date', 'end-date'].include?(r.item.value['field'])
-    }.map{|r| r.item.value}
+
     @available_fields.concat(custom_fields_for_view)
     @included_fields = session[:included_fields] || []
 
@@ -44,7 +43,30 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def save_fields
-    session[:included_fields] = params[:included_fields] || []
+    unless (session.has_key?(:included_fields))
+      session[:included_fields] = []
+    end
+
+    session[:included_fields] = params[:included_fields]
+
+    s3Client = Aws::S3::Resource.new(region:'eu-west-1')
+
+    session[:included_fields].each do |field_name|
+      fields_location = session[:custom_fields].select{|f| f['field'] == field_name}.length == 1 ? session[:custom_fields] : @available_fields
+      field = fields_location.select{|f| f['field'] == field_name}.first
+      register = field_name == session[:register_name] ? session[:register_name] : '';
+      field_yaml = { "cardinality" => '1', "datatype" => field['datatype'], "field" => field['field'], "phase" => 'experiment', "register" => register, "text" => field['text']}.to_yaml
+
+      obj = s3Client.bucket('firebreak-register-data').object("field/#{ field['field'] }.yaml")
+      obj.put(body: field_yaml)
+
+    end
+
+    register_yaml = { "fields" => session[:included_fields], "phase" => 'experiment', "register" => session[:register_name], "registry" => "government-digital-service", "text" => session[:register_description] }.to_yaml
+    obj = s3Client.bucket('firebreak-register-data').object("register/#{ session[:register_name] }.yaml")
+    obj.put(body: register_yaml)
+
+
 
     redirect_from('fields')
   end
@@ -57,7 +79,7 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def save_custom_field
-    session[:custom_fields] << CustomField.new(params.require(:custom_field).permit(:field_name, :field_description, :datatype))
+    session[:custom_fields] << CustomField.new(params.require(:custom_field).permit(:field, :text, :datatype))
 
     redirect_from('custom_field')
   end
@@ -82,6 +104,12 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def save_upload_data
+    file = params[:register_data]
+
+    s3Client = Aws::S3::Resource.new(region:'eu-west-1')
+    obj = s3Client.bucket('firebreak-register-data').object(file.original_filename)
+    obj.upload_file(file.path)
+
     redirect_from('upload_data')
   end
 
@@ -143,12 +171,16 @@ class TemporaryRegisterController < ApplicationController
     @registers = OpenRegister.registers :discovery
     @registers.concat(OpenRegister.registers :alpha)
     @registers.concat(OpenRegister.registers :beta)
+
+    @available_fields = @@registers_client.get_register('field', 'beta').get_records.select{
+        |r| ['name', 'official-name', 'start-date', 'end-date'].include?(r.item.value['field'])
+    }.map{|r| r.item.value}
   end
 
   private
 
   def custom_fields_for_view
-    session[:custom_fields].map{|cf| {'field' => cf['field_name'], 'text' => cf['field_description'], 'datatype' => cf['datatype']}}
+    session[:custom_fields].map{|cf| {'field' => cf['field'], 'text' => cf['text'], 'datatype' => cf['datatype']}}
   end
 
   def redirect_from(current_page)

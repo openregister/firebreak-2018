@@ -4,7 +4,7 @@
 
 <h2>5. Upload your data</h2>
 
-<%= form_tag("/temporary_register/save_upload_data", method: ":post") do %>
+<%= form_tag("/temporary_register/save_upload_data", multipart: true, method: ":post") do %>
     <div class="form-group">
       <%= file_field_tag :register_data %>
     </div>
