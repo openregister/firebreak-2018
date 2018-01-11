@@ -9,7 +9,10 @@
       <%= file_field_tag :register_data %>
     </div>
 
-    <p>Your file must be of type .xlsx, .xls or Open Document and the field names and types must exactly match those specified for this register.</p>
+    <p>Your file must</p>
+    <li> be of type .xlsx, .xls or Open Document </li>
+    <li> have field names and types which exactly match those specified for this register </li>
+    <li>contain data which matches the types specified for that field</li>
 
     <div class="form-group">
       <%= submit_tag "Continue", {class: "button"} %>
