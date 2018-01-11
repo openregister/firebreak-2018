@@ -4,6 +4,15 @@
 
 <h2>2. Give your register a description</h2>
 
+<p>Users of your register may have limited knowledge of the subject area the register comes from. A description helps users understand the context, scope and origin of the register.</p>
+
+<h3>It is often useful to include context that tells users how decisions are made about what is included in the Register. </h3>
+<p>For example 'Government domains that appear on GOV.UK and have been approved by the Naming and Approvals Committee'</p>
+
+<h3>It may also be useful to describe how the unique identifier has been selected or designed. </h3> 
+<p>For example 'The ISO 3166-2:GB identifier for local authorities in England. Unique codes have been created for local authorities that don't have an existing ISO code.'</p>
+
+
 <%= form_tag("/temporary_register/save_description", method: ":post") do %>
     <div class="form-group">
       <%= text_field_tag(:register_description, @register_description) %>

@@ -1,6 +1,11 @@
 <h1 class="heading-large">Create your own temporary register</h1>
 
 <h2>1. Give your register a name</h2>
+<p>Register names help users understand what the data in a register is about. To make them as useful as possible, register names should be:</p>
+<p><bull> A noun - the name for the thing your register describes, such as 'school' or 'hospital</bull></p>
+<p><bull> Unambiguous - register names can be multiple words, separated by hyphens, if it helps make the meaning clearer to users. So, 'minor-injury-unit' might be a better name than 'hospital' if that is closer to the scope of the register. You can change this later. </p>
+
+<p>The name of the register is also used as the name for the first field in the Register, known as the Key Field. The Key Field in a Register always contains a unique identifier for each record in the register. That might be an ISO code, or a company number, for example.</p>
 
 <%= form_tag("/temporary_register/save_register_name", method: ":post") do %>
     <div class="form-group">

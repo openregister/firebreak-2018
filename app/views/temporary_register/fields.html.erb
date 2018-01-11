@@ -3,6 +3,7 @@
 <h1 class="heading-large">Create your own temporary register</h1>
 
 <h2>3. Choose fields to add to the register</h2>
+<p>Using existing fields for common elements of your register helps it to operate alongside or in combination with other registers.</p>
 
 <%= form_tag("save_fields", method: ":post") do %>
     <div class="form-group">
@@ -50,7 +51,7 @@
       </div>
     </div>
 
-    <p>
+<p>If you need to create new field names and descriptions, you can
       <%= link_to 'Create a custom field', '/temporary_register/custom_field' %>
     </p>
 
