@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   get 'temporary_register/register_name' => 'temporary_register#register_name'
   get 'temporary_register/description' => 'temporary_register#description'
   get 'temporary_register/fields' => 'temporary_register#fields'
-  get 'temporary_register/custom_field' => 'temporary_register#custom_field'
+  get 'temporary_register/create_custom_field' => 'temporary_register#create_custom_field'
   get 'temporary_register/linked_registers' => 'temporary_register#linked_registers'
   get 'temporary_register/upload_data' => 'temporary_register#upload_data'
   get 'temporary_register/preview' => 'temporary_register#preview'

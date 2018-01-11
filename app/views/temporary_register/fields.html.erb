@@ -38,7 +38,11 @@
             <% field = @available_fields.select{|f| f['field'] == field_name}.first %>
             <div class="multiple-choice-container">
               <div class="multiple-choice">
-                <input type="checkbox" id="field-<%= field['field'] %>" name="fields[]" value="<%= field['field'] %>">
+                <% if (field['field'] != @register_name) %>
+                  <input type="checkbox" id="field-<%= field['field'] %>" name="fields[]" value="<%= field['field'] %>" />
+                <% else %>
+                  <i class="fa fa-key fa-2x" aria-hidden="true"></i>
+                <% end %>
                 <label for="field-1"><%= field['field'] %></label>
               </div>
               <p><span class="bold">Description:</span> <%= field['text'] %></p>
@@ -51,7 +55,7 @@
       </div>
     </div>
 
-    <p><%= link_to 'Create a custom field', '/temporary_register/custom_field' %></p>
+    <p><%= link_to 'Create a custom field', '/temporary_register/create_custom_field' %></p>
 
     <div class="form-group">
       <%= submit_tag "Next", {class: "button"} %>

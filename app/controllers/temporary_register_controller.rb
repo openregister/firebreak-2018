@@ -2,11 +2,14 @@ require 'openregister'
 require 'rubygems'
 require 'zip'
 require 'aws-sdk'
+require 'json'
 
 class TemporaryRegisterController < ApplicationController
   before_filter :initializeRegisters
 
   def register_name
+    session.clear()
+
     @register_name = session[:register_name]
 
     render "register_name"
@@ -33,11 +36,12 @@ class TemporaryRegisterController < ApplicationController
   def fields()
     unless (session.has_key?(:custom_fields))
       session[:custom_fields] = []
+      session[:custom_fields] << { "field" => session[:register_name], "text" => "Primary key field for #{session[:register_name]} register", "datatype" => 'string' }
     end
 
-
     @available_fields.concat(custom_fields_for_view)
-    @included_fields = session[:included_fields] || []
+    @included_fields = session[:included_fields] || [session[:register_name]]
+    @register_name = session[:register_name]
 
     render "fields"
   end
@@ -49,14 +53,10 @@ class TemporaryRegisterController < ApplicationController
 
     session[:included_fields] = params[:included_fields]
 
-
-
-
-
     redirect_from('fields')
   end
 
-  def custom_field
+  def create_custom_field
     @datatypes = @@registers_client.get_register('datatype', 'beta').get_records.map{|r| r.item.value}
     @custom_field = CustomField.new
 
@@ -66,7 +66,7 @@ class TemporaryRegisterController < ApplicationController
   def save_custom_field
     session[:custom_fields] << CustomField.new(params.require(:custom_field).permit(:field, :text, :datatype))
 
-    redirect_from('custom_field')
+    redirect_from('create_custom_field')
   end
 
   def linked_registers
@@ -111,8 +111,6 @@ class TemporaryRegisterController < ApplicationController
     @uploaded_file = session[:register_data]['original_filename']
     @upload_file_name = session[:register_data]['path']
 
-
-
     render "summary"
   end
 
@@ -137,6 +135,8 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def confirmation
+    # Delete uploaded files from S3
+
     render "congratulations"
   end
 
@@ -225,7 +225,7 @@ class TemporaryRegisterController < ApplicationController
                         'description'
                       when 'description'
                         'fields'
-                      when 'custom_field'
+                      when 'create_custom_field'
                         'fields'
                       when 'fields'
                         'linked_registers'

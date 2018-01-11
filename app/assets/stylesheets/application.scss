@@ -1,4 +1,6 @@
 @import 'govuk-elements';
+@import "font-awesome-sprockets";
+@import "font-awesome";
 
 .container {
   @extend %site-width-container;
@@ -74,4 +76,10 @@ p.heading {
   dd {
     margin-bottom: 10px;
   }
+}
+
+.multiple-choice i {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
