@@ -2,7 +2,7 @@
 
 <h1 class="heading-large">Create your own temporary register</h1>
 
-<h2>5. Upload your data</h2>
+<h2 class="heading-medium">5. Upload your data</h2>
 
 <%= form_tag("/temporary_register/save_upload_data", multipart: true, method: ":post") do %>
     <div class="form-group">
@@ -10,9 +10,11 @@
     </div>
 
     <p>Your file must</p>
-    <li> be of type .xlsx, .xls or Open Document </li>
-    <li> have field names and types which exactly match those specified for this register </li>
-    <li>contain data which matches the types specified for that field</li>
+    <ul class="list list-bullet">
+      <li>Be a single dataset in csv or tsv format.</li>
+      <li>Have field names and types which exactly match those specified for this register.</li>
+      <li>Contain data that matches the data type specified for that field.</li>
+    </ul>
 
     <div class="form-group">
       <%= submit_tag "Continue", {class: "button"} %>

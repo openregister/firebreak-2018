@@ -3,29 +3,30 @@
 <h1 class="heading-large">Create your own temporary register</h1>
 <h2 class="heading-medium">Summary</h2>
 
-<div class="form-group">
-  <label class="form-label">Register name</label>
-  <%= text_field_tag(:register_name, @register_name, { disabled: true }) %>
-</div>
+<dl class="summary-list">
+  <dt>Register name</dt>
+  <dd><%= @register_name %></dd>
 
-<div class="form-group">
-  <label class="form-label">Register description</label>
-  <%= text_field_tag(:register_description, @register_description, { disabled: true }) %>
-</div>
+  <dt>Register description</dt>
+  <dd><%= @register_description %></dd>
+</dl>
 
-<div class="form-group">
-  <label class="form-label">Linked registers</label>
-  <div class="register-container">
-    <% @linked_registers.each do |register| %>
-      <div class="register-item">
-        <p><span class="bold"><%= register['register'] %></span></p>
-      </div>
-    <% end %>
+<% if(@linked_registers.length > 0) %>
+  <div class="form-group clear">
+    <p class="heading">Linked registers</p>
+    <div class="register-container">
+      <% @linked_registers.each do |register| %>
+        <div class="register-item">
+          <p><span class="bold"><%= register['register'] %></span></p>
+        </div>
+      <% end %>
+    </div>
   </div>
-</div>
+<% end %>
 
-<div class="form-group">
-  <label class="form-label">Included fields</label>
+
+<div class="form-group clear">
+  <p class="heading">Included fields</p>
 
   <div class="field-container">
     <% @included_fields.each do |field| %>
@@ -34,16 +35,10 @@
       </div>
     <% end %>
   </div>
-
-</div>
-
-<div class="form-group">
-  <label class="form-label">Data file to upload</label>
-  <%= text_field_tag(:register_data_file, @upload_file_name, { disabled: true }) %>
 </div>
 
 <%= form_tag("create_register", method: ":post") do %>
-  <div class="form-group">
+  <div class="form-group clear">
     <%= submit_tag "Create register", {class: "button"} %>
   </div>
 <% end %>

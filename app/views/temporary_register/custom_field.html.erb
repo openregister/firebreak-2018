@@ -1,30 +1,36 @@
 <h1 class="heading-large">Create your own temporary register</h1>
 
-<h2>Create a custom field</h2>
-
-<p>Field names should give the name for the thing the field describes, such as 'school' or 'hospital'</p>
-<p>Field names can be multiple words, separated by hyphens, if it makes the meaning clearer to users. So 'minor-injury-unit' might be a better name than 'hospital', if that's closer to the scope of the field</p>
-<p>You can preview your field names and descriptions and they table they describe before you upload your data</p>
-
-<h3>field descriptions</h3>
-<p>Users of your register may not have knowledge of the subject area the register comes from. A field description helps users understand the context, scope and origin of the register.</p>
-
-<h3>Datatypes</h3>
-<p>Each field has a datatype that tells the register the kinds of data that field can contain. This helps ensure that text values aren't loaded into numerical fields, for example.</p>
+<h2 class="heading-medium">Create a custom field</h2>
 
 <%= form_for(@custom_field, url: '/temporary_register/save_custom_field') do |form| %>
     <div class="form-group">
-      <label class="form-label" for="name">Field Name</label>
+      <label class="form-label" for="name">
+        Field Name
+        <span class="form-hint">A name for the thing the field describes, such as school or hospital.</span>
+      </label>
       <%= form.text_field(:field, { class: 'form-control' }) %>
+      <details>
+        <summary><span class="summary">More information about field names</span></summary>
+        <div class="panel panel-border-narrow">
+          <p>Field names can be multiple words, separated by hyphens, if it makes the meaning clearer to users. So 'minor-injury-unit' might be a better name than 'hospital', if that's closer to the scope of the field.</p>
+          <p>You can preview your field names and descriptions and they table they describe before you upload your data.</p>
+        </div>
+      </details>
     </div>
 
     <div class="form-group">
-      <label class="form-label" for="description">Field Description</label>
+      <label class="form-label" for="description">
+        Field Description
+        <span class="form-hint">A field description helps users understand the context, scope and origin of the register.</span>
+      </label>
       <%= form.text_field(:text, { class: 'form-control' }) %>
     </div>
 
     <div class="form-group">
-      <label class="form-label" for="datatype">Data Type</label>
+      <label class="form-label" for="datatype">
+        Data Type
+        <span class="form-hint">Specifies the kinds of data that the field can contain, such as a field that contains website links.</span>
+      </label>
       <%= form.select(:datatype, options_for_select(@datatypes.map{|datatype| [datatype['datatype'], datatype['datatype']]}), {}, class: 'form-control' ) %>
     </div>
 

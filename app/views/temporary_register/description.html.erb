@@ -2,24 +2,29 @@
 
 <h1 class="heading-large">Create your own temporary register</h1>
 
-<h2>2. Give your register a description</h2>
-
-<p>Users of your register may have limited knowledge of the subject area the register comes from. A description helps users understand the context, scope and origin of the register.</p>
-
-<h3>It is often useful to include context that tells users how decisions are made about what is included in the Register. </h3>
-<p>For example 'Government domains that appear on GOV.UK and have been approved by the Naming and Approvals Committee'</p>
-
-<h3>It may also be useful to describe how the unique identifier has been selected or designed. </h3> 
-<p>For example 'The ISO 3166-2:GB identifier for local authorities in England. Unique codes have been created for local authorities that don't have an existing ISO code.'</p>
-
+<h2 class="heading-medium">2. Give your register a description</h2>
 
 <%= form_tag("/temporary_register/save_description", method: ":post") do %>
     <div class="form-group">
+      <label class="form-label">
+        Register description
+        <span class="form-hint">A description helps users understand the context, scope and origin of the register.</span>
+      </label>
       <%= text_field_tag(:register_description, @register_description) %>
     </div>
 
-    <div class="form-group">
+    <details>
+      <summary><span class="summary">More information about register descriptions</span></summary>
+      <div class="panel panel-border-narrow">
+        <p>It is often useful to include context that tells users how decisions are made about what is included in the Register.
+          For example 'Government domains that appear on GOV.UK and have been approved by the Naming and Approvals Committee'</p>
+
+        <p>It may also be useful to describe how the unique identifier has been selected or designed.
+          For example 'The ISO 3166-2:GB identifier for local authorities in England. Unique codes have been created for local authorities that don't have an existing ISO code.'</p>
+      </div>
+    </details>
+
+    <div class="form-group" style="clear: both">
       <%= submit_tag "Continue", {class: "button"} %>
     </div>
-
 <% end %>

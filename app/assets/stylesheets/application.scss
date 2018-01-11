@@ -24,6 +24,18 @@ h3 {
   font-weight: bold;
 }
 
+p.heading {
+  margin-top: 10px;
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+.clear {
+  clear: both;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .multiple-choice-container, .field-item, .register-item {
   margin: 10px auto;
   padding: 10px;
@@ -54,3 +66,12 @@ h3 {
   margin: auto;
 }
 
+.summary-list {
+  dt {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  dd {
+    margin-bottom: 10px;
+  }
+}
