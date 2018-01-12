@@ -50,6 +50,9 @@ class TemporaryRegisterController < ApplicationController
   def fields()
     unless (session.has_key?(:custom_fields))
       session[:custom_fields] = []
+    end
+
+    unless (session[:custom_fields].any?{ |f| f['field'] == session[:register_name] })
       session[:custom_fields] << { "field" => session[:register_name], "text" => "Primary key field for #{session[:register_name]} register", "datatype" => 'string' }
     end
 
@@ -153,8 +156,6 @@ class TemporaryRegisterController < ApplicationController
     register_instance = @@registers_orj_service.get_next_available_register
     register_instance.load_rsf(File.open(rsf_data.path, 'r'))
 
-    # load_rsf_response = RestClient::Request.execute(method: :post, url: "#{register_endpoint}/load-rsf", payload: File.open(rsf_data.path, 'r'), headers: { content_type: 'application/uk-gov-rsf', authorization: 'Basic b3BlbnJlZ2lzdGVyOmZpcmVicmVhaw==' })
-
     rsf_data.close
 
     # objects_to_delete = @s3Client.bucket('firebreak-register-data').objects({prefix: register_id})
@@ -168,11 +169,12 @@ class TemporaryRegisterController < ApplicationController
   end
 
   def confirmation
-    # Delete uploaded files from S3
     @register_endpoint = session[:register_endpoint]
 
     render "congratulations"
   end
+
+  private
 
   def initialize_data()
     @available_fields = @@registers_client.get_register('field', 'beta').get_records.select{
@@ -185,8 +187,6 @@ class TemporaryRegisterController < ApplicationController
       session[:unique_register_id] = Time.now.to_i.to_s
     end
   end
-
-  private
 
   def upload_field_definition_to_s3(s3Client, register_id)
     session[:included_fields].each do |field_name|
