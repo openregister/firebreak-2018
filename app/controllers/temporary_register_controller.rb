@@ -149,11 +149,14 @@ class TemporaryRegisterController < ApplicationController
     # objects_to_delete = s3Client.bucket('firebreak-register-data').object({prefix: register_id})
     # delete_register_files_from_s3(@s3Client, register_id, session[:register_name])
 
+    session[:register_endpoint] = register_instance.get_endpoint
+
     redirect_from('create_register')
   end
 
   def confirmation
     # Delete uploaded files from S3
+    @register_endpoint = session[:register_endpoint]
 
     render "congratulations"
   end

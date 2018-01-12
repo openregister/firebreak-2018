@@ -11,6 +11,10 @@ class ORJ
     RestClient::Request.execute(method: :post, url: "#{@endpoint}/load-rsf", payload: rsf, headers: { content_type: 'application/uk-gov-rsf', authorization: @auth })
   end
 
+  def get_endpoint
+    @endpoint
+  end
+
   private
 
   def clear
