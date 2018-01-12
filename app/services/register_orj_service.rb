@@ -21,16 +21,12 @@ class RegisterORJService
     register_name = @availableRegisters[@current_register - 1]
     register_endpoint = get_register_endpoint(register_name)
 
-    clear_register(register_endpoint)
-
-    register_endpoint
+    ORJ.new(register_endpoint, 'Basic <AUTH_HERE>')
   end
+
+  private
 
   def get_register_endpoint(register_name)
     "https://#{register_name}.cloudapps.digital"
-  end
-
-  def clear_register(register_endpoint)
-    RestClient::Request.execute(method: :delete, url: "#{register_endpoint}/delete-register-data", headers: { authorization: 'Basic b3BlbnJlZ2lzdGVyOmZpcmVicmVhaw==' })
   end
 end

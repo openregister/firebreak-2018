@@ -137,9 +137,10 @@ class TemporaryRegisterController < ApplicationController
     rsf_data << result['rsf']
     rsf_data.flush
 
-    register_endpoint = @@registers_orj_service.get_next_available_register
+    register_instance = @@registers_orj_service.get_next_available_register
+    register_instance.load_rsf(File.open(rsf_data.path, 'r'))
 
-    load_rsf_response = RestClient::Request.execute(method: :post, url: "#{register_endpoint}/load-rsf", payload: File.open(rsf_data.path, 'r'), headers: { content_type: 'application/uk-gov-rsf', authorization: 'Basic b3BlbnJlZ2lzdGVyOmZpcmVicmVhaw==' })
+    # load_rsf_response = RestClient::Request.execute(method: :post, url: "#{register_endpoint}/load-rsf", payload: File.open(rsf_data.path, 'r'), headers: { content_type: 'application/uk-gov-rsf', authorization: 'Basic b3BlbnJlZ2lzdGVyOmZpcmVicmVhaw==' })
 
     rsf_data.close
 
