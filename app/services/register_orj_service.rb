@@ -4,7 +4,6 @@ class RegisterORJService
   def initialize
     @availableRegisters = [
         "7307392fed6e40c0bb153999317f742b",
-        "e4de542bbc5e45a88b681708aaf9c5f7",
         "72ed97d95eba4e61b6a996a976fbe71f",
         "b28520b8d0db4442a2b2aee302b311dd",
         "5bb345d6db9d41898a50b46493be0580",
