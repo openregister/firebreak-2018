@@ -3,9 +3,11 @@ require 'rubygems'
 require 'zip'
 require 'aws-sdk'
 require 'json'
+require 'rest-client'
+require 'tempfile'
 
 class TemporaryRegisterController < ApplicationController
-  before_filter :initializeRegisters
+  before_filter :initialize_data
 
   def register_name
     session.clear()
@@ -129,7 +131,22 @@ class TemporaryRegisterController < ApplicationController
         log_type: 'None',
         payload: lambda_payload
     })
+
     result = JSON.parse(lambda_response.payload.string)
+    rsf_data = Tempfile.new('data')
+    rsf_data << result['rsf']
+    rsf_data.flush
+
+    register_endpoint = @@registers_orj_service.get_next_available_register
+
+    load_rsf_response = RestClient::Request.execute(method: :post, url: "#{register_endpoint}/load-rsf", payload: File.open(rsf_data.path, 'r'), headers: { content_type: 'application/uk-gov-rsf', authorization: 'Basic b3BlbnJlZ2lzdGVyOmZpcmVicmVhaw==' })
+
+    rsf_data.close
+
+    # objects_to_delete = @s3Client.bucket('firebreak-register-data').objects({prefix: register_id})
+    # objects_to_delete.batch_delete!({request_payer: "requester"})
+    # objects_to_delete = s3Client.bucket('firebreak-register-data').object({prefix: register_id})
+    # delete_register_files_from_s3(@s3Client, register_id, session[:register_name])
 
     redirect_from('create_register')
   end
@@ -140,43 +157,7 @@ class TemporaryRegisterController < ApplicationController
     render "congratulations"
   end
 
-  def saveField
-    session[:fieldName] = params[:fieldName]
-    @register = session[:register]
-    @field = session[:fieldName]
-    @pickerData = PickerDataService.new().generate(@register['register'], @register['_uri'], @field)
-
-    redirect_to controller: 'temporary_register', action: 'preview'
-  end
-
-  def download()
-    @pickerHtml = File.read(Rails.root.join("app", "assets", "static", "picker.html"))
-    @pickerData = File.read(Rails.root.join("app", "assets", "static", "picker-data.json"))
-
-    render "download"
-  end
-
-  def downloadZip()
-    filesToZip = ["picker.html", "picker-data.json"]
-    source = "/Users/karlbaker/RubymineProjects/Firebreak/app/assets/static"
-    zipFileName = "code.zip"
-    file = Tempfile.new(zipFileName)
-
-    Zip::File.open(file.path, Zip::File::CREATE) do |zipFile|
-      filesToZip.each do |filename|
-        zipFile.add(filename, source + '/' + filename)
-      end
-    end
-
-    zip_data = File.read(file.path)
-    send_data(zip_data, :type => 'application/zip', :filename => zipFileName)
-  end
-
-  def initializeRegisters()
-    @registers = OpenRegister.registers :discovery
-    @registers.concat(OpenRegister.registers :alpha)
-    @registers.concat(OpenRegister.registers :beta)
-
+  def initialize_data()
     @available_fields = @@registers_client.get_register('field', 'beta').get_records.select{
         |r| ['name', 'official-name', 'start-date', 'end-date'].include?(r.item.value['field'])
     }.map{|r| r.item.value}
@@ -206,13 +187,24 @@ class TemporaryRegisterController < ApplicationController
     register_yaml = { "fields" => session[:included_fields], "phase" => 'experiment', "register" => session[:register_name], "registry" => "government-digital-service", "text" => session[:register_description] }.to_yaml
     obj = s3Client.bucket('firebreak-register-data').object("#{ register_id }/register/#{ session[:register_name] }.yaml")
     obj.put(body: register_yaml)
-
-
   end
 
   def upload_register_data_to_s3(s3Client, register_id, file)
     obj = s3Client.bucket('firebreak-register-data').object("#{ register_id }/data/#{ file.original_filename }")
     obj.upload_file(file.path)
+  end
+
+  def delete_register_files_from_s3(s3Client, register_id, register_name)
+    session[:included_fields].each do |field_name|
+      obj = s3Client.bucket('firebreak-register-data').object("#{ register_name }/field/#{ field_name }.yaml")
+      obj.delete
+    end
+
+    obj = s3Client.bucket('firebreak-register-data').object("#{ register_id }/register/#{ register_name }.yaml")
+    obj.delete
+
+    obj = s3Client.bucket('firebreak-register-data').object("#{ register_id }/data/#{ session[:register_data]['original_filename'] }")
+    obj.delete
   end
 
   def custom_fields_for_view

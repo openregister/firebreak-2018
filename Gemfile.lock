@@ -749,6 +749,7 @@ DEPENDENCIES
   pg
   rails
   registers-ruby-client!
+  rest-client
   rubyzip
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)

@@ -14,7 +14,6 @@ Rails.application.routes.draw do
   get 'temporary_register/upload_data' => 'temporary_register#upload_data'
   get 'temporary_register/preview' => 'temporary_register#preview'
   get 'temporary_register/download' => 'temporary_register#download'
-  get 'temporary_register/downloadZip' => 'temporary_register#downloadZip'
   get 'temporary_register/confirmation' => 'temporary_register#confirmation'
   get 'temporary_register/summary' => 'temporary_register#summary'
   get 'temporary_register/confirmation' => 'temporary_register#confirmation'
