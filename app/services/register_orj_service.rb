@@ -8,7 +8,7 @@ class RegisterORJService
         "72ed97d95eba4e61b6a996a976fbe71f",
         "b28520b8d0db4442a2b2aee302b311dd"
     ]
-    @current_register = 1
+    @current_register = 0
   end
 
   def get_next_available_register

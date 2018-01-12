@@ -1,0 +1,19 @@
+<%= link_to('Back', 'register_name', { class: 'link-back' }) %>
+
+<h1 class="heading-large">Create your own temporary register</h1>
+
+<h2 class="heading-medium">3. Give your register a custodian</h2>
+
+<%= form_tag("/temporary_register/save_custodian", method: ":post") do %>
+    <div class="form-group">
+      <label class="form-label">
+        Register custodian
+        <span class="form-hint">A custodian is the person legally responsible for maintaining a register and ensuring the data is accurate and up-to-date.</span>
+      </label>
+      <%= text_field_tag(:register_custodian, @register_custodian) %>
+    </div>
+
+    <div class="form-group" style="clear: both">
+      <%= submit_tag "Continue", {class: "button"} %>
+    </div>
+<% end %>

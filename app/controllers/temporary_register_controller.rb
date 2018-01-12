@@ -35,6 +35,18 @@ class TemporaryRegisterController < ApplicationController
     redirect_from('description')
   end
 
+  def custodian
+    @register_custodian = session[:register_custodian]
+
+    render "custodian"
+  end
+
+  def save_custodian
+    session[:register_custodian] = params[:register_custodian]
+
+    redirect_from('custodian')
+  end
+
   def fields()
     unless (session.has_key?(:custom_fields))
       session[:custom_fields] = []
@@ -103,6 +115,7 @@ class TemporaryRegisterController < ApplicationController
   def summary()
     @register_name = session[:register_name]
     @register_description = session[:register_description]
+    @register_custodian = session[:register_custodian]
     @linked_registers = @@registers_client.get_register('register', 'beta').get_records
                             .select{|r| session[:linked_registers].include?(r.item.value['register'])}
                             .map{|r| r.item.value}
@@ -123,7 +136,7 @@ class TemporaryRegisterController < ApplicationController
     upload_register_defintion_to_s3(@s3Client, register_id)
 
     lambda_client = Aws::Lambda::Client.new(region: 'eu-west-1')
-    lambda_payload = JSON.generate({register_name: session[:register_name], phase: "experiment", register_id: session[:unique_register_id], register_data_file: session[:register_data]['original_filename'], custodian: "John Smith"})
+    lambda_payload = JSON.generate({register_name: session[:register_name], phase: "experiment", register_id: session[:unique_register_id], register_data_file: session[:register_data]['original_filename'], custodian: session[:register_custodian]})
 
     lambda_response = lambda_client.invoke({
         function_name: 'tsv_to_rsf',
@@ -220,6 +233,8 @@ class TemporaryRegisterController < ApplicationController
                       when 'register_name'
                         'description'
                       when 'description'
+                        'custodian'
+                      when 'custodian'
                         'fields'
                       when 'create_custom_field'
                         'fields'
