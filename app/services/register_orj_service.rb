@@ -6,7 +6,12 @@ class RegisterORJService
         "7307392fed6e40c0bb153999317f742b",
         "e4de542bbc5e45a88b681708aaf9c5f7",
         "72ed97d95eba4e61b6a996a976fbe71f",
-        "b28520b8d0db4442a2b2aee302b311dd"
+        "b28520b8d0db4442a2b2aee302b311dd",
+        "5bb345d6db9d41898a50b46493be0580",
+        "9cb1b41f6f7c4cd699c9a067dbb828df",
+        "d8406c96a9bf4fe29e62a81e36e7934d",
+        "a2f6bfbb23b54317aab4e75f04b84595",
+        "4868c21e1f0744868486686b7a6baf92"
     ]
     @current_register = 0
   end
