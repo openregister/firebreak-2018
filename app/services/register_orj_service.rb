@@ -25,7 +25,7 @@ class RegisterORJService
     register_name = @availableRegisters[@current_register - 1]
     register_endpoint = get_register_endpoint(register_name)
 
-    ORJ.new(register_endpoint, 'Basic <AUTH_HERE>')
+    ORJ.new(register_endpoint, ENV['REGISTERS_AUTH'])
   end
 
   private
