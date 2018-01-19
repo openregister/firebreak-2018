@@ -1,0 +1,32 @@
+<%= link_to('Back', 'upload_data', { class: 'link-back' }) %>
+
+<h1 class="heading-large">Create your own temporary register</h1>
+
+<h2 class="heading-medium">7. Choose deployment slot</h2>
+
+<%= form_tag("/temporary_register/save_deployment_slot", method: ":post") do %>
+    <h3>Available deployment slots</h3>
+
+    <% @available_deployment_slots.each_index do |idx| %>
+          <!--<div class="multiple-choice-container radio-choice-container">-->
+            <!--<div class="multiple-choice">-->
+              <!--<input type="radio" id="slot-<%= idx %>" name="slots" value="<%= @available_deployment_slots[idx] %>">-->
+              <!--<label for="field-1"><%= idx %></label>-->
+            <!--</div>-->
+          <!--</div>-->
+
+        <div class="column-one-third">
+          <div class="multiple-choice-container radio-choice-container">
+            <div class="multiple-choice">
+              <input type="radio" id="deployment_slot-<%= idx %>" name="deployment_slot" value="<%= idx %>">
+              <label for="deployment_slot-<%= idx %>"><%= idx + 1 %></label>
+            </div>
+            <p><%= @available_deployment_slots[idx] %></p>
+          </div>
+        </div>
+    <% end %>
+
+    <div class="form-group" style="clear: both">
+      <%= submit_tag "Continue", {class: "button"} %>
+    </div>
+<% end %>

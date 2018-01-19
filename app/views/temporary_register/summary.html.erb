@@ -1,4 +1,4 @@
-<%= link_to('Back', 'upload_data', { class: 'link-back' }) %>
+<%= link_to('Back', 'deployment_slot', { class: 'link-back' }) %>
 
 <h1 class="heading-large">Create your own temporary register</h1>
 <h2 class="heading-medium">Summary</h2>
@@ -12,6 +12,14 @@
 
   <dt>Register custodian</dt>
   <dd><%= @register_custodian %></dd>
+</dl>
+
+<dl class="summary-list">
+  <dt>Deployment slot</dt>
+  <dd><%= @deployment_slot %></dd>
+
+  <dt>Deployment slot endpoint</dt>
+  <dd><%= @deployment_slot_endpoint %></dd>
 </dl>
 
 <% if(@linked_registers.length > 0) %>
@@ -45,3 +53,4 @@
     <%= submit_tag "Create register", {class: "button"} %>
   </div>
 <% end %>
+

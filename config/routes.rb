@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   get 'temporary_register/create_custom_field' => 'temporary_register#create_custom_field'
   get 'temporary_register/linked_registers' => 'temporary_register#linked_registers'
   get 'temporary_register/upload_data' => 'temporary_register#upload_data'
+  get 'temporary_register/deployment_slot' => 'temporary_register#deployment_slot'
   get 'temporary_register/preview' => 'temporary_register#preview'
   get 'temporary_register/download' => 'temporary_register#download'
   get 'temporary_register/confirmation' => 'temporary_register#confirmation'
@@ -25,6 +26,7 @@ Rails.application.routes.draw do
   post 'temporary_register/save_custom_field', to: 'temporary_register#save_custom_field'
   post 'temporary_register/save_linked_registers', to: 'temporary_register#save_linked_registers'
   post 'temporary_register/save_upload_data', to: 'temporary_register#save_upload_data'
+  post 'temporary_register/save_deployment_slot', to: 'temporary_register#save_deployment_slot'
   post 'temporary_register/create_register', to: 'temporary_register#create_register'
 
   root 'temporary_register#index'

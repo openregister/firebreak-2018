@@ -15,6 +15,21 @@ class RegisterORJService
     @current_register = 0
   end
 
+  def get_all_registers
+    @availableRegisters.map { |register| get_register_endpoint(register) }
+  end
+
+  def get_deployment_slot(register_endpoint)
+    @availableRegisters.index { |host| register_endpoint.include?(host) } + 1
+  end
+
+  def get_register_for_deployment_slot(deployment_slot)
+    register_name = @availableRegisters[deployment_slot]
+    register_endpoint = get_register_endpoint(register_name)
+
+    ORJ.new(register_endpoint, ENV['REGISTERS_AUTH'])
+  end
+
   def get_next_available_register
     if (@current_register == @availableRegisters.length)
       @current_register = 1

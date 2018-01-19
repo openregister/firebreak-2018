@@ -54,6 +54,20 @@ p.heading {
   margin-bottom: 0;
 }
 
+.radio-choice-container {
+  .multiple-choice {
+    float: none;
+
+    label {
+      float: none;
+    }
+  }
+
+  p {
+    word-break: break-all;
+  }
+}
+
 .field-item, .register-item {
   float: left;
   margin-right: 10px;

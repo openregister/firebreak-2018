@@ -115,6 +115,19 @@ class TemporaryRegisterController < ApplicationController
     redirect_from('upload_data')
   end
 
+  def deployment_slot
+    @deployment_slot = session[:deployment_slot]
+    @available_deployment_slots = @@registers_orj_service.get_all_registers
+
+    render "deployment_slot"
+  end
+
+  def save_deployment_slot
+    session[:deployment_slot] = params[:deployment_slot].to_i
+
+    redirect_from('deployment_slot')
+  end
+
   def summary()
     @register_name = session[:register_name]
     @register_description = session[:register_description]
@@ -128,6 +141,8 @@ class TemporaryRegisterController < ApplicationController
     @included_fields.concat(custom_fields_for_view)
     @uploaded_file = session[:register_data]['original_filename']
     @upload_file_name = session[:register_data]['path']
+    @deployment_slot = session[:deployment_slot] + 1
+    @deployment_slot_endpoint = @@registers_orj_service.get_register_for_deployment_slot(session[:deployment_slot]).get_endpoint
 
     render "summary"
   end
@@ -153,7 +168,7 @@ class TemporaryRegisterController < ApplicationController
     rsf_data << result['rsf']
     rsf_data.flush
 
-    register_instance = @@registers_orj_service.get_next_available_register
+    register_instance = @@registers_orj_service.get_register_for_deployment_slot(session[:deployment_slot])
     register_instance.load_rsf(File.open(rsf_data.path, 'r'))
 
     rsf_data.close
@@ -243,6 +258,8 @@ class TemporaryRegisterController < ApplicationController
                       when 'linked_registers'
                         'upload_data'
                       when 'upload_data'
+                        'deployment_slot'
+                      when 'deployment_slot'
                         'summary'
                       when 'create_register'
                         'confirmation'
